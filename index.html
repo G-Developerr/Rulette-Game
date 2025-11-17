@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1, user-scalable=no">
+    <title>Roulette Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1> Roulette Game</h1>
+    <p>Guess a number between 1 and 38!</p>
+
+    <div class="roulette-container">
+        <div class="pointer"></div>
+        <div class="roulette-spinner" id="roulette-spinner"></div>
+        <div class="roulette-numbers" id="roulette-numbers"></div>
+    </div>
+
+    <div class="balance-display" id="balance-display">Total Balance: $450</div>
+
+    <div>
+        <label for="bet-amount">Enter your bet amount: $</label>
+        <input type="number" id="bet-amount" min="1" />
+    </div>
+
+    <div>
+        <label for="guess-number">Guess a number (1-38):</label>
+        <input type="number" id="guess-number" min="1" max="38" />
+    </div>
+
+    <div class="bet-buttons">
+        <button onclick="setBetAmount(10)">$10 Bet</button>
+        <button onclick="setBetAmount(20)">$20 Bet</button>
+        <button onclick="setBetAmount(50)">$50 Bet</button>
+    </div>
+
+    <button onclick="playGame()">Spin the Roulette</button>
+
+    <div class="status" id="status">Welcome to the Roulette Game! Your balance is $450.</div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

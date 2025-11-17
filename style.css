@@ -1,0 +1,143 @@
+h1 {
+  color: rgb(218, 153, 14);
+  text-align: center;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-image: url("photo.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  margin: 0;
+}
+
+.roulette-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border: 10px solid #e74c3c;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+}
+
+.roulette-spinner,
+.roulette-numbers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transform-origin: center;
+}
+
+.roulette-spinner {
+  background: conic-gradient(
+    black 0% 2.63%,
+    red 2.63% 5.26%,
+    black 5.26% 7.89%,
+    red 7.89% 10.52%,
+    black 10.52% 13.15%,
+    red 13.15% 15.78%,
+    black 15.78% 18.41%,
+    red 18.41% 21.04%,
+    black 21.04% 23.68%,
+    red 23.68% 26.31%,
+    black 26.31% 28.94%,
+    red 28.94% 31.57%,
+    black 31.57% 34.2%,
+    red 34.2% 36.83%,
+    black 36.83% 39.46%,
+    red 39.46% 42.1%,
+    black 42.1% 44.73%,
+    red 44.73% 47.36%,
+    black 47.36% 50%,
+    red 50% 52.63%,
+    black 52.63% 55.26%,
+    red 55.26% 57.89%,
+    black 57.89% 60.52%,
+    red 60.52% 63.15%,
+    black 63.15% 65.78%,
+    red 65.78% 68.41%,
+    black 68.41% 71.04%,
+    red 71.04% 73.68%,
+    black 73.68% 76.31%,
+    red 76.31% 78.94%,
+    black 78.94% 81.57%,
+    red 81.57% 84.2%,
+    black 84.2% 86.83%,
+    red 86.83% 89.46%,
+    black 89.46% 92.1%,
+    red 92.1% 94.73%,
+    black 94.73% 97.36%,
+    red 97.36% 100%
+  );
+}
+
+.roulette-number {
+  position: absolute;
+  font-size: 12px;
+  color: white;
+  transform-origin: center;
+  text-align: center;
+}
+
+.pointer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 40px;
+  background-color: yellow;
+  z-index: 10;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.status {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.status.red {
+  color: red;
+}
+
+.status.green {
+  color: green;
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+.balance-display {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #34495e;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+}
