@@ -127,11 +127,6 @@ function isWinningBet(betConfig, number) {
   return betConfig.value === "low" ? number >= 1 && number <= 18 : number >= 19 && number <= 36;
 }
 
-function calculateWinningNumber() {
-  const winningIndex = Math.floor(Math.random() * wheelNumbers.length);
-  return { winningNumber: wheelNumbers[winningIndex], winningIndex };
-}
-
 function playGame() {
   if (isSpinning) return;
 
@@ -147,10 +142,24 @@ function playGame() {
   const spinner = document.getElementById("roulette-spinner");
   const numbers = document.getElementById("roulette-numbers");
   const degreesPerNumber = 360 / wheelNumbers.length;
-  const spins = Math.floor(Math.random() * 4) + 6;
-  const { winningNumber, winningIndex } = calculateWinningNumber();
-  const winningAngle = winningIndex * degreesPerNumber;
-  currentRotation += 360 * spins + (360 - winningAngle);
+
+  // Pick a random winning index
+  const winningIndex = Math.floor(Math.random() * wheelNumbers.length);
+  const winningNumber = wheelNumbers[winningIndex];
+
+  // The pointer is at the top (0deg). 
+  // We need the winning slice to end up under the pointer.
+  // Each number sits at: index * degreesPerNumber degrees from the top of the wheel.
+  // To bring winningIndex under the pointer we rotate by:
+  //   fullSpins  +  (360 - winningIndex * degreesPerNumber)
+  // BUT we also need to cancel out whatever rotation the wheel already has (currentRotation % 360).
+
+  const spins = (Math.floor(Math.random() * 4) + 6) * 360;
+  const targetAngle = winningIndex * degreesPerNumber;
+  const previousRemainder = currentRotation % 360;
+  const extraNeeded = (360 - targetAngle - previousRemainder + 360) % 360;
+
+  currentRotation += spins + extraNeeded;
 
   isSpinning = true;
   spinButton.disabled = true;
