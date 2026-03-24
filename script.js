@@ -30,8 +30,10 @@ function buildWheelGradient() {
 
 function createRouletteNumbers() {
   const numbersContainer = document.getElementById("roulette-numbers");
+  const rouletteContainer = document.querySelector(".roulette-container");
   numbersContainer.innerHTML = "";
-  const radius = 132;
+  const containerSize = rouletteContainer ? rouletteContainer.clientWidth : 320;
+  const radius = (containerSize / 2) - 28;
   const degreesPerNumber = 360 / wheelNumbers.length;
 
   wheelNumbers.forEach((number, index) => {
@@ -230,4 +232,5 @@ window.onload = () => {
   renderHistory();
   document.getElementById("bet-type").addEventListener("change", updateBetInputs);
   updateBetInputs();
+  window.addEventListener("resize", createRouletteNumbers);
 };
