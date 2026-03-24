@@ -9,36 +9,82 @@
 </head>
 
 <body>
-    <h1> Roulette Game</h1>
-    <p>Guess a number between 1 and 38!</p>
+    <h1>Roulette Game</h1>
+    <p class="subtitle">Play European Roulette (0-36) and build your streak.</p>
 
-    <div class="roulette-container">
-        <div class="pointer"></div>
-        <div class="roulette-spinner" id="roulette-spinner"></div>
-        <div class="roulette-numbers" id="roulette-numbers"></div>
+    <div class="balance-display" id="balance-display">Balance: $450</div>
+
+    <div class="game-layout">
+        <div class="roulette-container">
+            <div class="pointer"></div>
+            <div class="roulette-spinner" id="roulette-spinner"></div>
+            <div class="roulette-numbers" id="roulette-numbers"></div>
+        </div>
+
+        <div class="control-panel">
+            <div class="field">
+                <label for="bet-amount">Bet amount ($)</label>
+                <input type="number" id="bet-amount" min="1" />
+            </div>
+
+            <div class="bet-buttons">
+                <button onclick="setBetAmount(10)">$10</button>
+                <button onclick="setBetAmount(25)">$25</button>
+                <button onclick="setBetAmount(50)">$50</button>
+                <button onclick="setBetAmount(100)">$100</button>
+            </div>
+
+            <div class="field">
+                <label for="bet-type">Bet type</label>
+                <select id="bet-type">
+                    <option value="number">Single Number (x35)</option>
+                    <option value="color">Color (x2)</option>
+                    <option value="oddEven">Odd / Even (x2)</option>
+                    <option value="highLow">1-18 / 19-36 (x2)</option>
+                </select>
+            </div>
+
+            <div class="field" id="number-field">
+                <label for="bet-value-number">Choose number (0-36)</label>
+                <input type="number" id="bet-value-number" min="0" max="36" />
+            </div>
+
+            <div class="field hidden" id="color-field">
+                <label for="bet-value-color">Choose color</label>
+                <select id="bet-value-color">
+                    <option value="red">Red</option>
+                    <option value="black">Black</option>
+                </select>
+            </div>
+
+            <div class="field hidden" id="odd-even-field">
+                <label for="bet-value-odd-even">Choose type</label>
+                <select id="bet-value-odd-even">
+                    <option value="odd">Odd</option>
+                    <option value="even">Even</option>
+                </select>
+            </div>
+
+            <div class="field hidden" id="high-low-field">
+                <label for="bet-value-high-low">Choose range</label>
+                <select id="bet-value-high-low">
+                    <option value="low">1 - 18</option>
+                    <option value="high">19 - 36</option>
+                </select>
+            </div>
+
+            <button id="spin-button" onclick="playGame()">Spin Roulette</button>
+            <button class="secondary" onclick="resetGame()">Reset Game</button>
+        </div>
     </div>
 
-    <div class="balance-display" id="balance-display">Total Balance: $450</div>
+    <div class="status" id="status">Welcome! Place your bet and spin.</div>
+    <div class="stats" id="stats">Wins: 0 | Losses: 0 | Last result: -</div>
 
-    <div>
-        <label for="bet-amount">Enter your bet amount: $</label>
-        <input type="number" id="bet-amount" min="1" />
+    <div class="history-card">
+        <h3>Last 8 Spins</h3>
+        <ul id="history-list"></ul>
     </div>
-
-    <div>
-        <label for="guess-number">Guess a number (1-38):</label>
-        <input type="number" id="guess-number" min="1" max="38" />
-    </div>
-
-    <div class="bet-buttons">
-        <button onclick="setBetAmount(10)">$10 Bet</button>
-        <button onclick="setBetAmount(20)">$20 Bet</button>
-        <button onclick="setBetAmount(50)">$50 Bet</button>
-    </div>
-
-    <button onclick="playGame()">Spin the Roulette</button>
-
-    <div class="status" id="status">Welcome to the Roulette Game! Your balance is $450.</div>
 
     <script src="script.js"></script>
 </body>
