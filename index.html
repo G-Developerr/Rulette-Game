@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Roulette Royale — European</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="casino-app">
+
+  <!-- ═══ TOP BAR ═══ -->
+  <header class="top-bar">
+    <div class="brand">
+      <span class="brand-diamond">◆</span>
+      <span class="brand-name">ROULETTE ROYALE</span>
+      <span class="brand-tag">EUROPEAN</span>
+    </div>
+    <div class="top-center">
+      <div class="round-pill">ROUND <span id="round-num">1</span></div>
+      <div class="phase-pill" id="phase-pill">PLACE YOUR BETS</div>
+    </div>
+    <div class="top-right">
+      <button class="sound-btn" id="sound-btn" onclick="toggleSound()" title="Sound">🔊</button>
+      <div class="hud-box">
+        <div class="hud-label">BALANCE</div>
+        <div class="hud-val" id="hud-balance">$1,000</div>
+      </div>
+      <div class="hud-box accent">
+        <div class="hud-label">TOTAL BET</div>
+        <div class="hud-val" id="hud-bet">$0</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ BODY ═══ -->
+  <div class="game-body">
+
+    <!-- ── LEFT: WHEEL ── -->
+    <aside class="wheel-panel">
+
+      <div class="wheel-frame-wrap">
+        <div class="wheel-frame">
+          <div class="wheel-disk" id="wheel-disk">
+            <canvas id="wheel-canvas"></canvas>
+            <div class="wheel-hub"></div>
+          </div>
+          <div class="ball-orbit" id="ball-orbit">
+            <div class="ball" id="ball"></div>
+          </div>
+          <div class="wheel-cone"></div>
+        </div>
+      </div>
+
+      <!-- Big winning-number reveal (shown after spin) -->
+      <div class="win-display hidden" id="win-display">
+        <div class="win-num-big" id="win-num-big">0</div>
+        <div class="win-label"   id="win-label">GREEN</div>
+      </div>
+
+      <!-- Recent results -->
+      <div class="recent-panel">
+        <div class="recent-header">
+          <span class="panel-title">RECENT</span>
+          <span class="spin-count" id="spin-count">0 spins</span>
+        </div>
+        <div class="bubble-row" id="bubble-row"></div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="stats-panel">
+        <div class="panel-title">STATISTICS</div>
+
+        <div class="dist-list">
+          <div class="dist-row">
+            <span class="dist-name">Red</span>
+            <div class="dist-track"><div class="dist-fill red-fill" id="bar-red" style="width:0%"></div></div>
+            <span class="dist-pct" id="pct-red">0%</span>
+          </div>
+          <div class="dist-row">
+            <span class="dist-name">Black</span>
+            <div class="dist-track"><div class="dist-fill blk-fill" id="bar-black" style="width:0%"></div></div>
+            <span class="dist-pct" id="pct-black">0%</span>
+          </div>
+          <div class="dist-row">
+            <span class="dist-name">Zero</span>
+            <div class="dist-track"><div class="dist-fill grn-fill" id="bar-green" style="width:0%"></div></div>
+            <span class="dist-pct" id="pct-green">0%</span>
+          </div>
+        </div>
+
+        <div class="hotcold-row">
+          <div class="hc-box">
+            <div class="hc-title">🔥 HOT</div>
+            <div class="hc-nums" id="hc-hot">—</div>
+          </div>
+          <div class="hc-box">
+            <div class="hc-title">❄ COLD</div>
+            <div class="hc-nums" id="hc-cold">—</div>
+          </div>
+        </div>
+
+        <div class="wl-bar">
+          <div class="wl-cell">
+            <span class="wl-label">Wins</span>
+            <strong class="wl-val green" id="gs-wins">0</strong>
+          </div>
+          <div class="wl-div"></div>
+          <div class="wl-cell">
+            <span class="wl-label">Losses</span>
+            <strong class="wl-val red" id="gs-losses">0</strong>
+          </div>
+          <div class="wl-div"></div>
+          <div class="wl-cell">
+            <span class="wl-label">Streak</span>
+            <strong class="wl-val" id="gs-streak">—</strong>
+          </div>
+          <div class="wl-div"></div>
+          <div class="wl-cell">
+            <span class="wl-label">Net</span>
+            <strong class="wl-val" id="gs-net">$0</strong>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── RIGHT: BETTING ── -->
+    <main class="bet-panel">
+
+      <!-- Felt table -->
+      <div class="bet-table-wrap">
+        <div class="bet-table" id="bet-table">
+
+          <div class="bt-left">
+            <div class="bc zero" data-type="number" data-value="0" onclick="placeBet(this)">0</div>
+          </div>
+
+          <div class="bt-center">
+            <div class="bt-numbers" id="bt-numbers"></div>
+            <div class="bt-dozens">
+              <div class="bc dozen" data-type="dozen" data-value="1" onclick="placeBet(this)">1st 12</div>
+              <div class="bc dozen" data-type="dozen" data-value="2" onclick="placeBet(this)">2nd 12</div>
+              <div class="bc dozen" data-type="dozen" data-value="3" onclick="placeBet(this)">3rd 12</div>
+            </div>
+            <div class="bt-outside">
+              <div class="bc outside"         data-type="highlow" data-value="low"   onclick="placeBet(this)">1–18</div>
+              <div class="bc outside"         data-type="oddeven" data-value="even"  onclick="placeBet(this)">EVEN</div>
+              <div class="bc outside red-fld" data-type="color"   data-value="red"   onclick="placeBet(this)">RED</div>
+              <div class="bc outside blk-fld" data-type="color"   data-value="black" onclick="placeBet(this)">BLACK</div>
+              <div class="bc outside"         data-type="oddeven" data-value="odd"   onclick="placeBet(this)">ODD</div>
+              <div class="bc outside"         data-type="highlow" data-value="high"  onclick="placeBet(this)">19–36</div>
+            </div>
+          </div>
+
+          <div class="bt-right">
+            <div class="bc col-bet" data-type="column" data-value="top" onclick="placeBet(this)">2:1</div>
+            <div class="bc col-bet" data-type="column" data-value="mid" onclick="placeBet(this)">2:1</div>
+            <div class="bc col-bet" data-type="column" data-value="bot" onclick="placeBet(this)">2:1</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Racetrack / announced bets -->
+      <div class="racetrack-wrap">
+        <div class="racetrack">
+          <div class="race-numbers race-top">
+            <span>22</span><span>18</span><span>29</span><span>7</span><span>28</span><span>12</span><span>35</span><span>3</span><span>26</span><span>0</span><span>32</span>
+          </div>
+
+          <div class="race-center">
+            <div class="bc sector" data-type="sector" data-value="tier" onclick="placeBet(this)">Tier</div>
+            <div class="bc sector" data-type="sector" data-value="orphans" onclick="placeBet(this)">Orphans</div>
+            <div class="bc sector zero-sector" data-type="sector" data-value="zero" onclick="placeBet(this)">Zero</div>
+            <div class="bc sector" data-type="sector" data-value="voisins" onclick="placeBet(this)">Voisins</div>
+          </div>
+
+          <div class="race-numbers race-bottom">
+            <span>1</span><span>20</span><span>14</span><span>31</span><span>9</span><span>17</span><span>34</span><span>6</span><span>27</span><span>13</span><span>36</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chip rack -->
+      <div class="chip-rack">
+        <div class="rack-label">SELECT CHIP VALUE</div>
+        <div class="chip-strip" id="chip-strip">
+          <button class="chip c1"   data-v="1"   onclick="selectChip(this,1)"><span>$1</span></button>
+          <button class="chip c5"   data-v="5"   onclick="selectChip(this,5)"><span>$5</span></button>
+          <button class="chip c10"  data-v="10"  onclick="selectChip(this,10)"><span>$10</span></button>
+          <button class="chip c25"  data-v="25"  onclick="selectChip(this,25)"><span>$25</span></button>
+          <button class="chip c50"  data-v="50"  onclick="selectChip(this,50)"><span>$50</span></button>
+          <button class="chip c100" data-v="100" onclick="selectChip(this,100)"><span>$100</span></button>
+          <button class="chip c500" data-v="500" onclick="selectChip(this,500)"><span>$500</span></button>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="btn-row">
+        <button class="btn btn-undo"   onclick="undoLast()" title="Undo last bet (U)">↩ Undo</button>
+        <button class="btn btn-clear"  onclick="clearAllBets()" title="Clear all bets (C)">✕ Clear</button>
+        <button class="btn btn-double" onclick="doubleAllBets()" title="Double all bets (D)">×2</button>
+        <button class="btn btn-spin"   id="btn-spin" onclick="doSpin()" title="Spin wheel (Space)">SPIN</button>
+        <button class="btn btn-repeat" id="btn-repeat" onclick="repeatLastBet()" disabled title="Repeat last bets (R)">↺ Repeat</button>
+        <button class="btn btn-auto"   id="btn-auto"   onclick="toggleAutoPlay()" title="Auto-play: repeats last bet automatically">▶ Auto</button>
+        <button class="btn btn-reset"  onclick="resetAll()">Reset</button>
+      </div>
+      <div class="keys-hint">Space: Spin &nbsp;·&nbsp; R: Repeat &nbsp;·&nbsp; D: Double &nbsp;·&nbsp; C: Clear &nbsp;·&nbsp; Esc: Close</div>
+      <div class="auto-countdown" id="auto-countdown"><div class="auto-countdown-fill" id="auto-fill"></div></div>
+
+      <!-- Status -->
+      <div class="game-status" id="game-status">Select a chip value, place your bets and press SPIN!</div>
+
+      <!-- Active bets -->
+      <div class="bet-summary" id="bet-summary"></div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Hover tooltip -->
+<div class="bet-tooltip" id="bet-tooltip"></div>
+
+<!-- Result overlay -->
+<div class="overlay hidden" id="overlay">
+  <div class="overlay-box">
+    <div class="ov-title">WINNING NUMBER</div>
+    <div class="ov-ball"     id="ov-ball">0</div>
+    <div class="ov-tag"      id="ov-tag">GREEN</div>
+    <div class="ov-headline" id="ov-headline">YOU WIN!</div>
+    <div class="ov-payout"   id="ov-payout">+$350</div>
+    <div class="ov-actions">
+      <button class="ov-btn"           onclick="closeOverlay()">Continue</button>
+      <button class="ov-btn-secondary" onclick="closeAndRepeat()">↺ Repeat Bet</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
