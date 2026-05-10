@@ -123,12 +123,16 @@ function fmt(n)      { return '$'+Math.abs(n).toLocaleString(); }
 function bKey(t,v)   { return `${t}__${v}`; }
 function multFor(t, v)  {
   if (t === 'number') return 35;
+  if (t === 'split') return 17;
+  if (t === 'corner') return 8;
   if (t === 'dozen' || t === 'column') return 2;
   if (t === 'sector') return v === 'zero' ? 5 : 3;
   return 1;
 }
 function payLbl(t, v)   {
   if (t === 'number') return '35:1';
+  if (t === 'split') return '17:1';
+  if (t === 'corner') return '8:1';
   if (t === 'dozen' || t === 'column') return '2:1';
   if (t === 'sector') return v === 'zero' ? '5:1' : '3:1';
   return '1:1';
@@ -136,6 +140,8 @@ function payLbl(t, v)   {
 
 function labelFor(type, value) {
   if (type==='number')  return `#${value}`;
+  if (type==='split')   return `Split ${value.split('-').join('/')}`;
+  if (type==='corner')  return `Corner ${value.split('-').join('/')}`;
   if (type==='color')   return value==='red'?'Red':'Black';
   if (type==='oddeven') return value==='odd'?'Odd':'Even';
   if (type==='highlow') return value==='low'?'1–18':'19–36';
@@ -152,6 +158,8 @@ function labelFor(type, value) {
 
 function checkWin(type, value, n) {
   if (type==='number')  return n===parseInt(value);
+  if (type==='split')   return value.split('-').map(Number).includes(n);
+  if (type==='corner')  return value.split('-').map(Number).includes(n);
   if (type==='color')   return n!==0 && numColor(n)===value;
   if (type==='oddeven') return n!==0 && (value==='odd'?n%2!==0:n%2===0);
   if (type==='highlow') return n!==0 && (value==='low'?n>=1&&n<=18:n>=19&&n<=36);
@@ -179,6 +187,85 @@ function sectorShort(value) {
   if (value === 'tier') return 'T';
   if (value === 'orphans') return 'O';
   return '?';
+}
+function getNumCoord(n) {
+  return { col: Math.floor((n - 1) / 3) + 1, row: ((n - 1) % 3) + 1 };
+}
+function validSplit(a, b) {
+  if (a === 0 || b === 0) return false;
+  const x = getNumCoord(a), y = getNumCoord(b);
+  return (x.col === y.col && Math.abs(x.row - y.row) === 1) ||
+         (x.row === y.row && Math.abs(x.col - y.col) === 1);
+}
+function validCorner(nums) {
+  if (nums.length !== 4 || nums.some((n) => n === 0)) return false;
+  const coords = nums.map(getNumCoord);
+  const cols = [...new Set(coords.map((c) => c.col))].sort((a, b) => a - b);
+  const rows = [...new Set(coords.map((c) => c.row))].sort((a, b) => a - b);
+  if (cols.length !== 2 || rows.length !== 2) return false;
+  return cols[1] - cols[0] === 1 && rows[1] - rows[0] === 1;
+}
+function numFromCoord(col, row) {
+  if (col < 1 || col > 12 || row < 1 || row > 3) return null;
+  return (col - 1) * 3 + row;
+}
+function commitGroupedNumberBet(nums, type, el, chipPos) {
+  const value = [...nums].sort((a, b) => a - b).join('-');
+  const key = bKey(type, value);
+  const ex = activeBets.find((b) => b.key === key);
+  if (ex) {
+    ex.amount += selectedChip;
+    updateCellChip(ex.el, ex.amount, ex.chipPos);
+  } else {
+    activeBets.push({
+      key,
+      type,
+      value,
+      amount: selectedChip,
+      label: labelFor(type, value),
+      multiplier: multFor(type, value),
+      el,
+      chipPos
+    });
+    updateCellChip(el, selectedChip, chipPos);
+  }
+}
+function deriveInsideNumberBet(el, evt) {
+  const n = parseInt(el.dataset.value);
+  if (!evt || n === 0) return { type: 'number', nums: [n], chipPos: { x: 88, y: 88 } };
+  const rect = el.getBoundingClientRect();
+  const rx = (evt.clientX - rect.left) / rect.width;
+  const ry = (evt.clientY - rect.top) / rect.height;
+  const edge = 0.24;
+  const { col, row } = getNumCoord(n);
+  const left = numFromCoord(col - 1, row);
+  const right = numFromCoord(col + 1, row);
+  const up = numFromCoord(col, row + 1);
+  const down = numFromCoord(col, row - 1);
+
+  if (rx < edge && ry < edge) {
+    const nums = [n, left, up, numFromCoord(col - 1, row + 1)].filter(Boolean);
+    if (validCorner(nums)) return { type: 'corner', nums, chipPos: { x: 0, y: 0 } };
+  }
+  if (rx > 1 - edge && ry < edge) {
+    const nums = [n, right, up, numFromCoord(col + 1, row + 1)].filter(Boolean);
+    if (validCorner(nums)) return { type: 'corner', nums, chipPos: { x: 100, y: 0 } };
+  }
+  if (rx < edge && ry > 1 - edge) {
+    const nums = [n, left, down, numFromCoord(col - 1, row - 1)].filter(Boolean);
+    if (validCorner(nums)) return { type: 'corner', nums, chipPos: { x: 0, y: 100 } };
+  }
+  if (rx > 1 - edge && ry > 1 - edge) {
+    const nums = [n, right, down, numFromCoord(col + 1, row - 1)].filter(Boolean);
+    if (validCorner(nums)) return { type: 'corner', nums, chipPos: { x: 100, y: 100 } };
+  }
+
+  if (rx < edge && left && validSplit(n, left)) return { type: 'split', nums: [n, left], chipPos: { x: 0, y: 50 } };
+  if (rx > 1 - edge && right && validSplit(n, right)) return { type: 'split', nums: [n, right], chipPos: { x: 100, y: 50 } };
+  if (ry < edge && up && validSplit(n, up)) return { type: 'split', nums: [n, up], chipPos: { x: 50, y: 0 } };
+  if (ry > 1 - edge && down && validSplit(n, down)) return { type: 'split', nums: [n, down], chipPos: { x: 50, y: 100 } };
+
+  return { type: 'number', nums: [n], chipPos: { x: 88, y: 88 } };
 }
 function refreshSectorCoverage() {
   document.querySelectorAll('.bc[data-type="number"]').forEach((cell) => {
@@ -280,8 +367,8 @@ function buildTable() {
       cell.className=`bc ${RED_NUMS.has(n)?'num-red':'num-black'}`;
       cell.dataset.type='number'; cell.dataset.value=String(n);
       cell.textContent=n;
-      cell.onclick=()=>placeBet(cell);
-      cell.addEventListener('mouseenter',e=>showTip(e,`#${n}  ·  Pays 35:1`));
+      cell.onclick=(evt)=>placeBet(cell, evt);
+      cell.addEventListener('mouseenter',e=>showTip(e,`#${n}  ·  Center: 35:1 | Edge: split 17:1 | Corner: 8:1`));
       cell.addEventListener('mousemove', moveTip);
       cell.addEventListener('mouseleave',hideTip);
       rowEl.appendChild(cell);
@@ -299,29 +386,43 @@ function buildTable() {
 }
 
 // ── PLACE BET ─────────────────────────────────────────────────
-function placeBet(el) {
+function placeBet(el, evt=null) {
   if (isSpinning) return;
-  const type=el.dataset.type, value=el.dataset.value, key=bKey(type,value);
+  let type=el.dataset.type, value=el.dataset.value, key=bKey(type,value);
   const total=activeBets.reduce((s,b)=>s+b.amount,0);
   if (total+selectedChip > balance) { setStatus('Not enough balance for this bet!','lose'); return; }
+  let chipPos = { x: 88, y: 88 };
 
   betHistory.push(activeBets.map(b=>({...b})));
   flyChip(el);
   snd_chip();
 
+  if (type === 'number') {
+    const inside = deriveInsideNumberBet(el, evt);
+    type = inside.type;
+    value = inside.nums.sort((a, b) => a - b).join('-');
+    chipPos = inside.chipPos;
+    key = bKey(type, value);
+  }
+
   const ex=activeBets.find(b=>b.key===key);
-  if (ex) { ex.amount+=selectedChip; updateCellChip(el,ex.amount); }
+  if (ex) {
+    ex.amount += selectedChip;
+    updateCellChip(ex.el, ex.amount, ex.chipPos);
+  }
   else {
-    activeBets.push({key,type,value,amount:selectedChip,label:labelFor(type,value),multiplier:multFor(type,value),el});
-    updateCellChip(el,selectedChip);
+    activeBets.push({key,type,value,amount:selectedChip,label:labelFor(type,value),multiplier:multFor(type,value),el,chipPos});
+    updateCellChip(el,selectedChip,chipPos);
   }
   refreshSectorCoverage();
   updateHUD(); renderBetSummary();
 }
 
-function updateCellChip(el, amount) {
+function updateCellChip(el, amount, chipPos = { x: 88, y: 88 }) {
   let chip=el.querySelector('.cell-chip');
   if (!chip) { chip=document.createElement('div'); chip.className='cell-chip'; el.appendChild(chip); el.classList.add('has-bet'); }
+  chip.style.left = `${chipPos.x}%`;
+  chip.style.top = `${chipPos.y}%`;
   chip.style.background=chipBgFor(amount);
   chip.textContent=amount>=1000?(amount/1000)+'k':amount;
 }
@@ -344,8 +445,18 @@ function undoLast() {
   activeBets.forEach(b=>removeCellChip(b.el));
   const prev=betHistory.pop();
   activeBets=prev.map(b=>{
-    const el=document.querySelector(`.bc[data-type="${b.type}"][data-value="${b.value}"]`);
-    if(el){b.el=el; updateCellChip(el,b.amount);} return b;
+    let el = b.el;
+    if (!el) {
+      if (b.type === 'number') el = document.querySelector(`.bc[data-type="number"][data-value="${b.value}"]`);
+      else if (b.type === 'split' || b.type === 'corner') {
+        const anchor = b.value.split('-').map(Number)[0];
+        el = document.querySelector(`.bc[data-type="number"][data-value="${anchor}"]`);
+      } else {
+        el = document.querySelector(`.bc[data-type="${b.type}"][data-value="${b.value}"]`);
+      }
+    }
+    if(el){b.el=el; updateCellChip(el,b.amount,b.chipPos);}
+    return b;
   });
   refreshSectorCoverage();
   updateHUD(); renderBetSummary();
@@ -355,7 +466,7 @@ function doubleAllBets() {
   if (isSpinning||activeBets.length===0) return;
   if (activeBets.reduce((s,b)=>s+b.amount,0) > balance) { setStatus('Not enough balance to double!','lose'); return; }
   betHistory.push(activeBets.map(b=>({...b})));
-  activeBets.forEach(b=>{ b.amount*=2; updateCellChip(b.el,b.amount); });
+  activeBets.forEach(b=>{ b.amount*=2; updateCellChip(b.el,b.amount,b.chipPos); });
   refreshSectorCoverage();
   snd_chip(); updateHUD(); renderBetSummary();
 }
@@ -365,10 +476,17 @@ function repeatLastBet() {
   if (lastBetSnap.reduce((s,b)=>s+b.amount,0) > balance) { setStatus('Not enough balance to repeat!','lose'); return; }
   clearAllBets();
   lastBetSnap.forEach(b=>{
-    const el=document.querySelector(`.bc[data-type="${b.type}"][data-value="${b.value}"]`);
+    let el = null;
+    if (b.type === 'number') el = document.querySelector(`.bc[data-type="number"][data-value="${b.value}"]`);
+    else if (b.type === 'split' || b.type === 'corner') {
+      const anchor = b.value.split('-').map(Number)[0];
+      el = document.querySelector(`.bc[data-type="number"][data-value="${anchor}"]`);
+    } else {
+      el = document.querySelector(`.bc[data-type="${b.type}"][data-value="${b.value}"]`);
+    }
     if (!el) return;
     activeBets.push({...b,el});
-    updateCellChip(el,b.amount);
+    updateCellChip(el,b.amount,b.chipPos);
   });
   refreshSectorCoverage();
   snd_chip(); updateHUD(); renderBetSummary();
