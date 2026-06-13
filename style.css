@@ -165,57 +165,27 @@ body {
 
 /* ── GAME BODY ─────────────────────────────────────────────── */
 .game-body {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 310px 1fr;
   gap: 14px;
   padding: 14px;
   max-width: 1500px;
   margin: 0 auto;
+  align-items: start;
 }
 
-/* ── WHEEL PANEL ── 3 columns: stats | wheel | recent ─────── */
+/* ── WHEEL PANEL ───────────────────────────────────────────── */
 .wheel-panel {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 16px;
-}
-
-/* The wheel wrap must have an explicit width so canvas.offsetWidth works */
-.wheel-frame-wrap {
-  flex: 0 0 360px;
-  width: 360px;
-  display: flex;
-  justify-content: center;
-}
-
-.wheel-center-col {
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 360px;
+  gap: 12px;
 }
 
-/* Stats & recent take equal flanking space */
-.wheel-panel > .stats-panel,
-.wheel-panel > .recent-panel {
-  flex: 1 1 220px;
-  min-width: 180px;
-  max-width: 300px;
-}
-
-/* Win display sits below wheel, full width of center col */
-.wheel-panel > .win-display,
-.wheel-center-col > .win-display {
-  width: 100%;
-}
+.wheel-frame-wrap { display: flex; justify-content: center; }
 
 .wheel-frame {
   position: relative;
-  width: 360px;
-  height: 360px;
+  width: min(290px, 100%);
   aspect-ratio: 1;
 }
 
@@ -1059,22 +1029,9 @@ body {
 .ov-btn-secondary:hover { filter: brightness(1.15); transform: translateY(-2px); }
 
 /* ── RESPONSIVE ────────────────────────────────────────────── */
-@media (max-width: 1100px) {
-  .wheel-panel {
-    flex-direction: column;
-    align-items: center;
-  }
-  .wheel-frame-wrap {
-    flex: 0 0 auto;
-    width: auto;
-  }
-  .wheel-center-col { width: 300px; }
-  .wheel-frame { width: 300px; height: 300px; }
-  .wheel-panel > .stats-panel,
-  .wheel-panel > .recent-panel {
-    max-width: 100%;
-    width: 100%;
-  }
+@media (max-width: 1000px) {
+  .game-body { grid-template-columns: 1fr; gap: 12px; }
+  .wheel-frame { width: min(270px, 80vw); }
   .bc { min-height: 30px; font-size: 11px; }
   .bt-left  { width: 42px; }
   .bt-right { width: 38px; }
