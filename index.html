@@ -40,9 +40,25 @@
   <!-- ═══ BODY ═══ -->
   <div class="game-body">
 
-    <!-- ── LEFT: WHEEL ── -->
+    <!-- ── TOP ROW: WHEEL + SIDE PANELS ── -->
     <aside class="wheel-panel">
 
+      <!-- LEFT SIDE: Recent + Win display -->
+      <div class="side-panel side-left">
+        <div class="recent-panel">
+          <div class="recent-header">
+            <span class="panel-title">RECENT</span>
+            <span class="spin-count" id="spin-count">0 spins</span>
+          </div>
+          <div class="bubble-row" id="bubble-row"></div>
+        </div>
+        <div class="win-display hidden" id="win-display">
+          <div class="win-num-big" id="win-num-big">0</div>
+          <div class="win-label"   id="win-label">GREEN</div>
+        </div>
+      </div>
+
+      <!-- CENTER: Wheel -->
       <div class="wheel-frame-wrap">
         <div class="wheel-frame">
           <div class="wheel-disk" id="wheel-disk">
@@ -56,22 +72,8 @@
         </div>
       </div>
 
-      <!-- Big winning-number reveal (shown after spin) -->
-      <div class="win-display hidden" id="win-display">
-        <div class="win-num-big" id="win-num-big">0</div>
-        <div class="win-label"   id="win-label">GREEN</div>
-      </div>
-
-      <!-- Recent results -->
-      <div class="recent-panel">
-        <div class="recent-header">
-          <span class="panel-title">RECENT</span>
-          <span class="spin-count" id="spin-count">0 spins</span>
-        </div>
-        <div class="bubble-row" id="bubble-row"></div>
-      </div>
-
-      <!-- Statistics -->
+      <!-- RIGHT SIDE: Statistics -->
+      <div class="side-panel side-right">
       <div class="stats-panel">
         <div class="panel-title">STATISTICS</div>
 
@@ -125,11 +127,11 @@
             <strong class="wl-val" id="gs-net">$0</strong>
           </div>
         </div>
-      </div>
+      </div><!-- end side-right -->
 
     </aside>
 
-    <!-- ── RIGHT: BETTING ── -->
+    <!-- ── BOTTOM: BETTING ── -->
     <main class="bet-panel">
 
       <!-- Felt table -->
