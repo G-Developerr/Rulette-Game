@@ -173,7 +173,7 @@ body {
   margin: 0 auto;
 }
 
-/* ── WHEEL PANEL ───────────────────────────────────────────── */
+/* ── WHEEL PANEL ── 3 columns: stats | wheel | recent ─────── */
 .wheel-panel {
   display: flex;
   flex-direction: row;
@@ -182,25 +182,40 @@ body {
   gap: 16px;
 }
 
-/* Side columns: fixed width, flex column */
-.side-panel {
-  flex: 0 0 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Center: wheel — grows to fill space, centered */
+/* The wheel wrap must have an explicit width so canvas.offsetWidth works */
 .wheel-frame-wrap {
-  flex: 0 0 auto;
+  flex: 0 0 360px;
+  width: 360px;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+}
+
+.wheel-center-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 360px;
+}
+
+/* Stats & recent take equal flanking space */
+.wheel-panel > .stats-panel,
+.wheel-panel > .recent-panel {
+  flex: 1 1 220px;
+  min-width: 180px;
+  max-width: 300px;
+}
+
+/* Win display sits below wheel, full width of center col */
+.wheel-panel > .win-display,
+.wheel-center-col > .win-display {
+  width: 100%;
 }
 
 .wheel-frame {
   position: relative;
-  width: min(360px, 100%);
+  width: 360px;
+  height: 360px;
   aspect-ratio: 1;
 }
 
@@ -1045,9 +1060,21 @@ body {
 
 /* ── RESPONSIVE ────────────────────────────────────────────── */
 @media (max-width: 1100px) {
-  .wheel-panel { flex-direction: column; align-items: center; }
-  .side-panel  { flex: 0 0 auto; width: 100%; max-width: 500px; }
-  .wheel-frame { width: min(300px, 80vw); }
+  .wheel-panel {
+    flex-direction: column;
+    align-items: center;
+  }
+  .wheel-frame-wrap {
+    flex: 0 0 auto;
+    width: auto;
+  }
+  .wheel-center-col { width: 300px; }
+  .wheel-frame { width: 300px; height: 300px; }
+  .wheel-panel > .stats-panel,
+  .wheel-panel > .recent-panel {
+    max-width: 100%;
+    width: 100%;
+  }
   .bc { min-height: 30px; font-size: 11px; }
   .bt-left  { width: 42px; }
   .bt-right { width: 38px; }
