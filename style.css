@@ -171,72 +171,36 @@ body {
   padding: 14px;
   max-width: 1500px;
   margin: 0 auto;
-  align-items: stretch;
 }
 
 /* ── WHEEL PANEL ───────────────────────────────────────────── */
 .wheel-panel {
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* Side columns: fixed width, flex column */
+.side-panel {
+  flex: 0 0 260px;
+  display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: center;
 }
 
+/* Center: wheel — grows to fill space, centered */
 .wheel-frame-wrap {
+  flex: 0 0 auto;
   display: flex;
   justify-content: center;
-}
-
-/* Row below the wheel: recent left, win-display center (if visible), stats right */
-.wheel-panel .win-display,
-.wheel-panel .recent-panel,
-.wheel-panel .stats-panel {
-  width: 100%;
-}
-
-/* Put recent + stats side by side in a row under the wheel */
-.wheel-panel .recent-panel {
-  order: 2;
-}
-.wheel-panel .win-display {
-  order: 1;
-}
-.wheel-panel .stats-panel {
-  order: 3;
-}
-
-/* Wrap recent & stats in a flex row via a wrapper trick using CSS */
-.wheel-panel {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto auto;
-  gap: 12px;
-}
-
-.wheel-frame-wrap {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  justify-self: center;
-}
-
-.win-display {
-  grid-column: 1 / -1;
-  grid-row: 2;
-}
-
-.recent-panel {
-  grid-column: 1;
-  grid-row: 3;
-}
-
-.stats-panel {
-  grid-column: 2;
-  grid-row: 3;
+  align-items: flex-start;
 }
 
 .wheel-frame {
   position: relative;
-  width: min(340px, 100%);
+  width: min(360px, 100%);
   aspect-ratio: 1;
 }
 
@@ -1080,14 +1044,9 @@ body {
 .ov-btn-secondary:hover { filter: brightness(1.15); transform: translateY(-2px); }
 
 /* ── RESPONSIVE ────────────────────────────────────────────── */
-@media (max-width: 1000px) {
-  .wheel-panel {
-    grid-template-columns: 1fr;
-  }
-  .wheel-frame-wrap { grid-column: 1; }
-  .win-display      { grid-column: 1; grid-row: 2; }
-  .recent-panel     { grid-column: 1; grid-row: 3; }
-  .stats-panel      { grid-column: 1; grid-row: 4; }
+@media (max-width: 1100px) {
+  .wheel-panel { flex-direction: column; align-items: center; }
+  .side-panel  { flex: 0 0 auto; width: 100%; max-width: 500px; }
   .wheel-frame { width: min(300px, 80vw); }
   .bc { min-height: 30px; font-size: 11px; }
   .bt-left  { width: 42px; }
