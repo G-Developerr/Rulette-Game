@@ -40,37 +40,35 @@
   <!-- ═══ BODY ═══ -->
   <div class="game-body">
 
-    <!-- ── WHEEL ROW: recent | wheel+win | stats ── -->
+    <!-- ── LEFT: WHEEL ── -->
     <aside class="wheel-panel">
 
-      <!-- LEFT: Recent results -->
+      <div class="wheel-frame-wrap">
+        <div class="wheel-frame">
+          <div class="wheel-disk" id="wheel-disk">
+            <canvas id="wheel-canvas"></canvas>
+            <div class="wheel-hub"></div>
+          </div>
+          <div class="ball-orbit" id="ball-orbit">
+            <div class="ball" id="ball"></div>
+          </div>
+          <div class="wheel-cone"></div>
+        </div>
+      </div>
+
+      <!-- Big winning-number reveal (shown after spin) -->
+      <div class="win-display hidden" id="win-display">
+        <div class="win-num-big" id="win-num-big">0</div>
+        <div class="win-label"   id="win-label">GREEN</div>
+      </div>
+
+      <!-- Recent results -->
       <div class="recent-panel">
         <div class="recent-header">
           <span class="panel-title">RECENT</span>
           <span class="spin-count" id="spin-count">0 spins</span>
         </div>
         <div class="bubble-row" id="bubble-row"></div>
-      </div>
-
-      <!-- CENTER: Wheel + win reveal below it -->
-      <div class="wheel-frame-wrap">
-        <div class="wheel-center-col">
-          <div class="wheel-frame">
-            <div class="wheel-disk" id="wheel-disk">
-              <canvas id="wheel-canvas"></canvas>
-              <div class="wheel-hub"></div>
-            </div>
-            <div class="ball-orbit" id="ball-orbit">
-              <div class="ball" id="ball"></div>
-            </div>
-            <div class="wheel-cone"></div>
-          </div>
-          <!-- Big winning-number reveal (shown after spin) -->
-          <div class="win-display hidden" id="win-display">
-            <div class="win-num-big" id="win-num-big">0</div>
-            <div class="win-label"   id="win-label">GREEN</div>
-          </div>
-        </div>
       </div>
 
       <!-- Statistics -->
