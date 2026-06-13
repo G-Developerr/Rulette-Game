@@ -40,40 +40,40 @@
   <!-- ═══ BODY ═══ -->
   <div class="game-body">
 
-    <!-- ── TOP ROW: WHEEL + SIDE PANELS ── -->
+    <!-- ── WHEEL ROW: recent | wheel+win | stats ── -->
     <aside class="wheel-panel">
 
-      <!-- LEFT SIDE: Recent + Win display -->
-      <div class="side-panel side-left">
-        <div class="recent-panel">
-          <div class="recent-header">
-            <span class="panel-title">RECENT</span>
-            <span class="spin-count" id="spin-count">0 spins</span>
-          </div>
-          <div class="bubble-row" id="bubble-row"></div>
+      <!-- LEFT: Recent results -->
+      <div class="recent-panel">
+        <div class="recent-header">
+          <span class="panel-title">RECENT</span>
+          <span class="spin-count" id="spin-count">0 spins</span>
         </div>
-        <div class="win-display hidden" id="win-display">
-          <div class="win-num-big" id="win-num-big">0</div>
-          <div class="win-label"   id="win-label">GREEN</div>
-        </div>
+        <div class="bubble-row" id="bubble-row"></div>
       </div>
 
-      <!-- CENTER: Wheel -->
+      <!-- CENTER: Wheel + win reveal below it -->
       <div class="wheel-frame-wrap">
-        <div class="wheel-frame">
-          <div class="wheel-disk" id="wheel-disk">
-            <canvas id="wheel-canvas"></canvas>
-            <div class="wheel-hub"></div>
+        <div class="wheel-center-col">
+          <div class="wheel-frame">
+            <div class="wheel-disk" id="wheel-disk">
+              <canvas id="wheel-canvas"></canvas>
+              <div class="wheel-hub"></div>
+            </div>
+            <div class="ball-orbit" id="ball-orbit">
+              <div class="ball" id="ball"></div>
+            </div>
+            <div class="wheel-cone"></div>
           </div>
-          <div class="ball-orbit" id="ball-orbit">
-            <div class="ball" id="ball"></div>
+          <!-- Big winning-number reveal (shown after spin) -->
+          <div class="win-display hidden" id="win-display">
+            <div class="win-num-big" id="win-num-big">0</div>
+            <div class="win-label"   id="win-label">GREEN</div>
           </div>
-          <div class="wheel-cone"></div>
         </div>
       </div>
 
-      <!-- RIGHT SIDE: Statistics -->
-      <div class="side-panel side-right">
+      <!-- Statistics -->
       <div class="stats-panel">
         <div class="panel-title">STATISTICS</div>
 
@@ -127,11 +127,11 @@
             <strong class="wl-val" id="gs-net">$0</strong>
           </div>
         </div>
-      </div><!-- end side-right -->
+      </div>
 
     </aside>
 
-    <!-- ── BOTTOM: BETTING ── -->
+    <!-- ── RIGHT: BETTING ── -->
     <main class="bet-panel">
 
       <!-- Felt table -->
